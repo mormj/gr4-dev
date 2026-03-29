@@ -1,0 +1,2 @@
+# Applied to all CMake-based repos by scripts/build-all.sh
+-GNinja

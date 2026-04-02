@@ -78,6 +78,54 @@ Wipe installed artifacts from `install/`:
 ./scripts/wipe.sh --yes
 ```
 
+## Scaffold New Projects
+
+Create a new local out-of-tree project under `src/`:
+
+```bash
+./scripts/scaffold.sh my-new-project
+```
+
+By default, that creates a first module with the same normalized name as the
+project. If you want a different initial module name, pass it as a second
+argument:
+
+```bash
+./scripts/scaffold.sh my-new-project filters
+```
+
+Add another module to that project:
+
+```bash
+./scripts/add-module.sh my-new-project filters
+```
+
+Add a block to that module:
+
+```bash
+./scripts/add-block.sh my-new-project filters Gain
+```
+
+The scaffold is Bash-only and keeps the layout intentionally small:
+
+- `src/gr4-<project>/CMakeLists.txt`
+- `src/gr4-<project>/blocks/<module>/CMakeLists.txt`
+- `src/gr4-<project>/blocks/<module>/include/gnuradio-4.0/<module>/`
+- `src/gr4-<project>/blocks/<module>/test/`
+
+Naming rules:
+
+- project and module names may use lowercase letters, digits, hyphens, and underscores
+- block names may use uppercase letters and are typically PascalCase, like `Copy`
+- generated filesystem names use hyphens
+- generated C++ identifiers use underscores
+
+Hierarchy:
+
+- project: repo under `src/gr4-<project>/`
+- module: package under `blocks/<module>/`
+- block: header/test pair under a module
+
 ## Bootstrap and refs (`repos.yaml`)
 
 `repos.yaml` is the source of truth for:

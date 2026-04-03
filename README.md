@@ -148,7 +148,7 @@ If you want to develop on a local branch in a repo, create/switch branch inside 
 
 `source scripts/dev-env.sh` exports consistent workspace defaults, including:
 
-- `CC`, `CXX`
+- `CC`, `CXX` when `GR4_CC` / `GR4_CXX` are set
 - `PKGCONF`, `PKG_CONFIG`
 - `GR4_PREFIX` and `GR4_PREFIX_PATH`
 - `PATH`, `CMAKE_PREFIX_PATH`, `PKG_CONFIG_PATH`

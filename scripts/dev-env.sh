@@ -23,8 +23,8 @@ GR4_SRC_DIR="${GR4_SRC_DIR:-src}"
 GR4_BUILD_DIR="${GR4_BUILD_DIR:-build}"
 GR4_PREFIX_DIR="${GR4_PREFIX_DIR:-install}"
 GR4_LLVM_ROOT="${GR4_LLVM_ROOT:-}"
-GR4_CC="${GR4_CC:-clang-20}"
-GR4_CXX="${GR4_CXX:-clang++-20}"
+GR4_CC="${GR4_CC:-}"
+GR4_CXX="${GR4_CXX:-}"
 GR4_PKGCONF="${GR4_PKGCONF:-pkgconf}"
 GR4_LOG_LEVEL="${GR4_LOG_LEVEL:-info}"
 GR4_DEBUG="${GR4_DEBUG:-0}"
@@ -72,19 +72,26 @@ fi
 
 export PATH
 
-if [ -n "${GR4_LLVM_ROOT}" ]; then
-  if [ "${GR4_CC}" = "clang-20" ] && [ -x "${GR4_LLVM_ROOT}/bin/clang" ]; then
+if [ -n "${GR4_CC}" ]; then
+  if [ -n "${GR4_LLVM_ROOT}" ] && [ "${GR4_CC}" = "clang-20" ] && [ -x "${GR4_LLVM_ROOT}/bin/clang" ]; then
     GR4_CC="${GR4_LLVM_ROOT}/bin/clang"
   fi
-  if [ "${GR4_CXX}" = "clang++-20" ] && [ -x "${GR4_LLVM_ROOT}/bin/clang++" ]; then
-    GR4_CXX="${GR4_LLVM_ROOT}/bin/clang++"
-  fi
+  export CC="${GR4_CC}"
+  export CMAKE_C_COMPILER="${CC}"
+else
+  unset CC CMAKE_C_COMPILER
 fi
 
-export CC="${GR4_CC}"
-export CXX="${GR4_CXX}"
-export CMAKE_C_COMPILER="${CC}"
-export CMAKE_CXX_COMPILER="${CXX}"
+if [ -n "${GR4_CXX}" ]; then
+  if [ -n "${GR4_LLVM_ROOT}" ] && [ "${GR4_CXX}" = "clang++-20" ] && [ -x "${GR4_LLVM_ROOT}/bin/clang++" ]; then
+    GR4_CXX="${GR4_LLVM_ROOT}/bin/clang++"
+  fi
+  export CXX="${GR4_CXX}"
+  export CMAKE_CXX_COMPILER="${CXX}"
+else
+  unset CXX CMAKE_CXX_COMPILER
+fi
+
 export PKGCONF="${GR4_PKGCONF}"
 export PKG_CONFIG="${PKGCONF}"
 

@@ -49,12 +49,14 @@ to_snake_case() {
 
 to_pascal_case() {
   local name="$1"
-  local part out=""
+  local part first rest out=""
 
   IFS='-_'
   for part in ${name}; do
     [ -n "${part}" ] || continue
-    out+="${part^}"
+    first="${part:0:1}"
+    rest="${part:1}"
+    out+="$(printf '%s%s' "$(printf '%s' "${first}" | tr '[:lower:]' '[:upper:]')" "${rest}")"
   done
   unset IFS
 

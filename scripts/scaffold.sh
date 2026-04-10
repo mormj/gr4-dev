@@ -99,7 +99,7 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GR4I_GNURADIO4 REQUIRED IMPORTED_TARGET gnuradio4)
 set(GR4I_GNURADIO4_TARGET "PkgConfig::GR4I_GNURADIO4")
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "\${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(Dependencies)
 include(PluginHelpers)
 gr4_${project_ns}_resolve_dependencies()

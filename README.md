@@ -16,6 +16,9 @@ It provides monorepo-like developer ergonomics (bootstrap, shared env, build/ins
 
 This repo does not own or merge application source trees.
 
+It also carries local builder references under `builders/` for dependency
+images and toolchain baselines.
+
 ## Quick start
 
 1. Create local env file - edit to match your environment and build tools
@@ -154,6 +157,17 @@ If you want to develop on a local branch in a repo, create/switch branch inside 
 - `PATH`, `CMAKE_PREFIX_PATH`, `PKG_CONFIG_PATH`
 - `LD_LIBRARY_PATH`, `DYLD_LIBRARY_PATH`, `PYTHONPATH`
 - `GNURADIO4_PLUGIN_DIRECTORIES`
+
+## Builder references
+
+`builders/` mirrors the dependency-image layout used in `gr4-ci`:
+
+- `builders/<distro>/base/` for distro-wide prerequisites
+- `builders/<distro>/profiles/<profile>/` for toolchain-specific layers
+- `builders/Makefile` for local image builds
+
+These files are a reference for dependency baselines, separate from the
+workspace's CMake config and host environment scripts.
 
 ## CMake args (shared and local)
 

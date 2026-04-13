@@ -75,6 +75,7 @@ append_args_from_file() {
 build_cmake_repo() {
   local name="$1"
   local source_dir="$2"
+  local repo_dir="$3"
   local bdir="${GR4_BUILD_PATH}/${name}"
   local -a cmake_args
   local c_flags=""
@@ -114,6 +115,11 @@ build_cmake_repo() {
   cmake -S "${source_dir}" -B "${bdir}" "${cmake_args[@]}"
   cmake --build "${bdir}" -j
   cmake --install "${bdir}"
+
+  if [ "${name}" = "gr4-studio" ]; then
+    echo "==> installing ${name} desktop app"
+    (cd "${repo_dir}" && npm install && npm run build)
+  fi
 }
 
 build_node_repo() {
@@ -122,6 +128,16 @@ build_node_repo() {
 
   echo "==> building ${name} (node)"
   (cd "${repo_dir}" && npm install && npm run build)
+
+  if [ "${name}" = "gr4-studio" ]; then
+    if [ -z "${GR4_PREFIX_PATH:-}" ]; then
+      echo "skip: ${name} install step needs GR4_PREFIX_PATH" >&2
+      return 0
+    fi
+
+    echo "==> installing ${name} to ${GR4_PREFIX_PATH}"
+    (cd "${repo_dir}" && npm run desktop:install -- --prefix "${GR4_PREFIX_PATH}")
+  fi
 }
 
 build_repo() {
@@ -144,7 +160,7 @@ build_repo() {
   fi
 
   if [ -f "${source_dir}/CMakeLists.txt" ]; then
-    build_cmake_repo "${name}" "${source_dir}"
+    build_cmake_repo "${name}" "${source_dir}" "${repo_dir}"
   elif [ -f "${repo_dir}/package.json" ]; then
     build_node_repo "${name}" "${repo_dir}"
   else

@@ -72,6 +72,26 @@ append_args_from_file() {
   done < "${file}"
 }
 
+install_gnuradio4_test_headers() {
+  local build_dir="$1"
+  local prefix_dir="$2"
+  local ut_include_dir="${build_dir}/_deps/ut-src/include"
+  local ut_header="${ut_include_dir}/boost/ut.hpp"
+  local dest_dir="${prefix_dir}/include/boost"
+
+  if [ ! -f "${ut_header}" ]; then
+    echo "warn: gnuradio4 built without vendored boost-ut header at ${ut_header}" >&2
+    return 0
+  fi
+
+  mkdir -p "${dest_dir}"
+  install -m 0644 "${ut_header}" "${dest_dir}/ut.hpp"
+
+  if [ -f "${ut_include_dir}/boost/ut.cppm" ]; then
+    install -m 0644 "${ut_include_dir}/boost/ut.cppm" "${dest_dir}/ut.cppm"
+  fi
+}
+
 build_cmake_repo() {
   local name="$1"
   local source_dir="$2"
@@ -115,6 +135,10 @@ build_cmake_repo() {
   cmake -S "${source_dir}" -B "${bdir}" "${cmake_args[@]}"
   cmake --build "${bdir}" -j
   cmake --install "${bdir}"
+
+  if [ "${name}" = "gnuradio4" ]; then
+    install_gnuradio4_test_headers "${bdir}" "${GR4_PREFIX_PATH}"
+  fi
 
   if [ "${name}" = "gr4-studio" ]; then
     echo "==> installing ${name} desktop app"
